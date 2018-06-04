@@ -31,17 +31,19 @@ namespace ReadingLibrary
         }
 
 
-        public  string ReadEncryptedFile(String FileName, byte[] Key, byte[] IV)
+        public  string ReadEncryptedFile(String FileName, byte[] Key, byte[] vector)
         {
-            try
-            {
+            //Decrypts a file using Rijndael algorithm.
+           
+                try
+                {
              
                 FileStream fStream = File.Open(FileName, FileMode.OpenOrCreate);
 
                 Rijndael RijndaelAlg = Rijndael.Create();
 
                 CryptoStream cStream = new CryptoStream(fStream,
-                    RijndaelAlg.CreateDecryptor(Key, IV),
+                    RijndaelAlg.CreateDecryptor(Key, vector),
                     CryptoStreamMode.Read);
 
                 StreamReader sReader = new StreamReader(cStream);
