@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Data;
 using System.IO;
 using System.Security.Cryptography;
+using System.Text;
 using System.Threading;
 using System.Xml;
 
@@ -8,7 +10,7 @@ namespace ReadingLibrary
 {
     public class ReadFile
     {
-        public  string readFileTxt(string fileName)
+        public string readFileTxt(string fileName)
         {
 
             if (File.Exists(fileName))
@@ -19,7 +21,7 @@ namespace ReadingLibrary
             return null;
         }
 
-        public  XmlDocument readFileXml(string fileName,string role)
+        public XmlDocument readFileXml(string fileName, string role)
         {
             if (Thread.CurrentPrincipal.IsInRole(role))
             {
@@ -43,13 +45,13 @@ namespace ReadingLibrary
 
         }
 
-        public  string ReadEncryptedFile(String FileName, byte[] Key, byte[] vector)
+        public string ReadEncryptedTxtFile(String FileName, byte[] Key, byte[] vector)
         {
             //Decrypts a file using Rijndael algorithm.
-           
-                try
-                {
-             
+
+            try
+            {
+
                 FileStream fStream = File.Open(FileName, FileMode.OpenOrCreate);
 
                 Rijndael RijndaelAlg = Rijndael.Create();
@@ -96,8 +98,24 @@ namespace ReadingLibrary
             }
         }
 
-    
+        public DataSet ReadEncryptedXmlFile(string filename)
+        {
+
+            DataSet ds = new DataSet();
+            FileStream aFileStream = new FileStream(filename, FileMode.Open);
+            StreamReader aStreamReader = new StreamReader(aFileStream);
+            UnicodeEncoding aUE = new UnicodeEncoding();
+            byte[] key = aUE.GetBytes("password");
+            RijndaelManaged RMCrypto = new RijndaelManaged();
+            CryptoStream aCryptoStream = new CryptoStream(aFileStream, RMCrypto.CreateDecryptor(key, key), CryptoStreamMode.Read);
+
+            ds.ReadXml(aCryptoStream);
+            aStreamReader.Close();
+            aFileStream.Close();
+            return ds;
+            
         }
+    }
 }
 
 
