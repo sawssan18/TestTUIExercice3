@@ -10,15 +10,22 @@ namespace ReadingLibrary
 {
     public class ReadFile
     {
-        public string readFileTxt(string fileName)
+        public string readFileTxt(string fileName,string role)
         {
-
-            if (File.Exists(fileName))
+            if (Thread.CurrentPrincipal.IsInRole(role))
             {
-                string text = File.ReadAllText(fileName);
+                string text = string.Empty;
+                if (File.Exists(fileName))
+                {
+                    text = File.ReadAllText(fileName);
+                    return text;
+                }
                 return text;
             }
-            return null;
+            else
+            {
+               return ("UnauthorizedAccess");
+            }
         }
 
         public XmlDocument readFileXml(string fileName, string role)
@@ -45,7 +52,7 @@ namespace ReadingLibrary
 
         }
 
-        public string ReadEncryptedTxtFile(String FileName, byte[] Key, byte[] vector)
+        public string readEncryptedTxtFile(String FileName, byte[] Key, byte[] vector)
         {
             //Decrypts a file using Rijndael algorithm.
 
@@ -98,7 +105,7 @@ namespace ReadingLibrary
             }
         }
 
-        public DataSet ReadEncryptedXmlFile(string filename)
+        public DataSet readEncryptedXmlFile(string filename)
         {
 
             DataSet ds = new DataSet();
