@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Security.Cryptography;
+using System.Threading;
 using System.Xml;
 
 namespace ReadingLibrary
@@ -18,18 +19,29 @@ namespace ReadingLibrary
             return null;
         }
 
-        public  XmlDocument readFileXml(string fileName)
+        public  XmlDocument readFileXml(string fileName,string role)
         {
-            XmlDocument xmlDoc = new XmlDocument();
-            if (File.Exists(fileName))
+            if (Thread.CurrentPrincipal.IsInRole("Admin"))
             {
-                xmlDoc.Load(fileName);
-                //xmlDoc.Save(output);
+
+                XmlDocument xmlDoc = new XmlDocument();
+
+
+                if (File.Exists(fileName))
+                {
+                    xmlDoc.Load(fileName);
+                    //xmlDoc.Save(output);
+                    return xmlDoc;
+                }
                 return xmlDoc;
             }
-            return xmlDoc;
-        }
+            else
+            {
+                Console.WriteLine("UnauthorizedAccess");
+                return null;
+            }
 
+        }
 
         public  string ReadEncryptedFile(String FileName, byte[] Key, byte[] vector)
         {
@@ -83,5 +95,9 @@ namespace ReadingLibrary
                 return null;
             }
         }
-    }
+
+    
+        }
 }
+
+
