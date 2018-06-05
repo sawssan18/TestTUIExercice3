@@ -21,7 +21,7 @@ namespace ReadingLibrary
 
         public  XmlDocument readFileXml(string fileName,string role)
         {
-            if (Thread.CurrentPrincipal.IsInRole("Admin"))
+            if (Thread.CurrentPrincipal.IsInRole(role))
             {
 
                 XmlDocument xmlDoc = new XmlDocument();
