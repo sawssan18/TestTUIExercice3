@@ -1,16 +1,19 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.Data;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace ReadingLibrary
 {
     public class ReadFile
     {
-        public string readFileTxt(string fileName,string role)
+        public string ReadFileTxt(string fileName,string role)
         {
             if (Thread.CurrentPrincipal.IsInRole(role))
             {
@@ -28,7 +31,7 @@ namespace ReadingLibrary
             }
         }
 
-        public XmlDocument readFileXml(string fileName, string role)
+        public XmlDocument ReadFileXml(string fileName, string role)
         {
             if (Thread.CurrentPrincipal.IsInRole(role))
             {
@@ -52,7 +55,7 @@ namespace ReadingLibrary
 
         }
 
-        public string readEncryptedTxtFile(String FileName, byte[] Key, byte[] vector)
+        public string ReadEncryptedTxtFile(String FileName, byte[] Key, byte[] vector)
         {
             //Decrypts a file using Rijndael algorithm.
 
@@ -105,11 +108,11 @@ namespace ReadingLibrary
             }
         }
 
-        public DataSet readEncryptedXmlFile(string filename)
+        public DataSet ReadEncryptedXmlFile(string fileName)
         {
 
             DataSet ds = new DataSet();
-            FileStream aFileStream = new FileStream(filename, FileMode.Open);
+            FileStream aFileStream = new FileStream(fileName, FileMode.Open);
             StreamReader aStreamReader = new StreamReader(aFileStream);
             UnicodeEncoding aUE = new UnicodeEncoding();
             byte[] key = aUE.GetBytes("password");
@@ -121,6 +124,19 @@ namespace ReadingLibrary
             aFileStream.Close();
             return ds;
             
+        }
+
+
+        public JObject readJsonFile(string fileName)
+        {
+           
+            using (StreamReader file = File.OpenText(fileName))
+            using (JsonTextReader reader = new JsonTextReader(file))
+            {
+               return (JObject)JToken.ReadFrom(reader);
+            }
+
+           
         }
     }
 }
