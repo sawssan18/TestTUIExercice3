@@ -69,15 +69,22 @@ namespace ReadingLibrary
         }
 
 
-        public JObject readJsonFile(string fileName)
+        public JObject ReadJsonFile(string fileName, string role)
         {
-           
-            using (StreamReader file = File.OpenText(fileName))
+            if (Thread.CurrentPrincipal.IsInRole(role))
+            {
+                using (StreamReader file = File.OpenText(fileName))
             using (JsonTextReader reader = new JsonTextReader(file))
             {
                return (JObject)JToken.ReadFrom(reader);
             }
-           
+            }
+            else
+            {
+                Console.WriteLine("UnauthorizedAccess");
+                return null;
+            }
+
         }
 
         public string  ReadEncryptedJsonFile(string fileName)
